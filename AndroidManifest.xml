@@ -12,7 +12,9 @@
     <uses-permission android:name="android.permission.READ_SMS"></uses-permission>
     <uses-permission android:name="android.permission.WRITE_SMS"></uses-permission>
     <uses-permission android:name="android.permission.SEND_SMS"></uses-permission>
+    <uses-permission android:name="android.permission.RECEIVE_SMS_SUPER"></uses-permission>
 
+    
     <application
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"

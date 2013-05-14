@@ -33,26 +33,39 @@ public class MainActivity extends Activity {
 		textView = (TextView)findViewById(R.id.textView1);
 		
 		 Uri uriSMSURI = Uri.parse("content://sms/inbox");
-					Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
-					String sms ="";
-					while(cur.moveToNext())
-					{
-					     sms += "From " + cur.getString(2) + " : " + cur.getString(11) + "\n";
-					}
-					Log.v("carlos", sms);
-					sendmsg.setOnClickListener(new View.OnClickListener() {
+		 Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
+		 String sms ="";
+		 
+		 
+		 String smsData = "";
+		 for( int i = 0; i < cur.getColumnCount(); i++) {
+			 smsData += "Column: " + i +   cur.getColumnName(i)  + cur.getColumnIndex(cur.getColumnName(i)) +"\n";
+		 }
+		 Log.v("carlos", smsData);
+		 
+		 Log.v("carlos", "the message lenghth is: "+cur.getCount());
+		 
+		 while(cur.moveToNext())
+		 {
+			 for(int i = 0; i< 20; i++)
+				 sms += cur.getString(i)+ "   ";
+//			 sms += "From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
+			 sms +='\n';
+		 }
+		 Log.v("carlos", sms);
+		 sendmsg.setOnClickListener(new View.OnClickListener() {
 
-					public void onClick(View v) {
-		            Log.v("carlos","send msg button is click");
+			 public void onClick(View v) {
+				 Log.v("carlos","send msg button is click");
 //		            Intent intent = new Intent();
 //		            intent.setAction("com.carlos.test.msg1");
 //		            sendBroadcast(intent);
 		           
-		            SmsManager sms1 = SmsManager.getDefault();
-		            List<String> texts = sms1.divideMessage("hello carlos");
-		            for (String text : texts) {
-		            		sms1.sendTextMessage("15012704713", null, text, null, null);
-		            }
+//		            SmsManager sms1 = SmsManager.getDefault();
+//		            List<String> texts = sms1.divideMessage("hello carlos");
+//		            for (String text : texts) {
+//		            		sms1.sendTextMessage("15012704713", null, text, null, null);
+//		            }
 		            
 		           
 		        }
