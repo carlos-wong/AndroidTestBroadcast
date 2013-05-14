@@ -29,6 +29,20 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name="com.carlos.testbroadcastreceiver.MyService" 
+             android:exported="true">
+        <intent-filter>
+            
+            <action android:name="com.carlos.testbroadcastreceiverMyService" />
+        </intent-filter>
+            
+        
+        </service>
+		<receiver android:name="com.carlos.testbroadcastreceiver.BootReceiver" >
+            <intent-filter >
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+            </intent-filter>
+        </receiver>
         <!-- <receiver android:name=".TestReciver" 
             android:enabled="true"
     		android:exported="true" >

