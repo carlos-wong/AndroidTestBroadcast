@@ -10,6 +10,7 @@ import android.content.IntentFilter;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.telephony.SmsManager;
 import android.util.Log;
 import android.view.LayoutInflater.Filter;
@@ -23,35 +24,78 @@ public class MainActivity extends Activity {
 	Button sendmsg;
 	MyReceiver receiver;
 	TextView textView;
-
+	Uri uriSMSURI = Uri.parse("content://sms/inbox");
 	
+	int smsCount = 0;
+	Handler handler;
+	int scanInterval = 5000;
+	
+	
+	private Runnable runnable = new Runnable() {
+		@Override
+   		public void run() {
+      /* do what you need to do */
+      /* and here comes the "trick" */
+			
+			Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
+			Log.v("carlos", cur.getCount()+" : "+smsCount);
+			String sms = "";
+			if(cur.getCount() > smsCount)
+			{
+					 while(cur.moveToNext())
+					 {
+						 
+//						 sms = "";
+//						 sms += cur.getString(8) + " From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
+						 if(cur.getString(8).equals("0"))
+						 {
+							 Log.v("calos", "you have a new message");
+						 }
+//						 Log.v("carlos", sms);
+
+					 }	
+				
+			}
+			
+			smsCount = cur.getCount();
+			cur.close();
+			handler.postDelayed(runnable, scanInterval);
+   		}
+	};
+
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		sendmsg = (Button)findViewById(R.id.button1);
 		textView = (TextView)findViewById(R.id.textView1);
+		handler = new Handler();
+		handler.postDelayed(runnable, scanInterval);
+
 		
-		 Uri uriSMSURI = Uri.parse("content://sms/inbox");
+		 
 		 Cursor cur = getContentResolver().query(uriSMSURI, null, null, null, null);
 		 String sms ="";
 		 
+		 smsCount = cur.getCount();
+		 cur.close();
 		 
-		 String smsData = "";
-		 for( int i = 0; i < cur.getColumnCount(); i++) {
-			 smsData += "Column: " + i +   cur.getColumnName(i)  + cur.getColumnIndex(cur.getColumnName(i)) +"\n";
-		 }
-		 Log.v("carlos", smsData);
 		 
-		 Log.v("carlos", "the message lenghth is: "+cur.getCount());
-		 
-		 while(cur.moveToNext())
-		 {
-			 for(int i = 0; i< 20; i++)
-				 sms += cur.getString(i)+ "   ";
-//			 sms += "From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
-			 sms +='\n';
-		 }
+//		 String smsData = "";
+//		 for( int i = 0; i < cur.getColumnCount(); i++) {
+//			 smsData += "Column: " + i +   cur.getColumnName(i)  + cur.getColumnIndex(cur.getColumnName(i)) +"\n";
+//		 }
+//		 Log.v("carlos", smsData);
+//		 
+//		 Log.v("carlos", "the message lenghth is: "+cur.getCount());
+//		 
+//		 while(cur.moveToNext())
+//		 {
+//			 for(int i = 0; i< 20; i++)
+//				 sms += cur.getString(i)+ "   ";
+////			 sms += "From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
+//			 sms +='\n';
+//		 }
 		 Log.v("carlos", sms);
 		 sendmsg.setOnClickListener(new View.OnClickListener() {
 
