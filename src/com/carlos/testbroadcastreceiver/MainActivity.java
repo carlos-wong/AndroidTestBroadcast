@@ -41,21 +41,22 @@ public class MainActivity extends Activity {
 //			Log.v("carlos", cur.getCount()+" : "+smsCount);
 //			String sms = "";
 			int i  = 0;
+			Log.v("carlos", " "+cur.getCount()+ " - " + smsCount);
 			if(cur.getCount() > smsCount)
 			{
 				i = cur.getCount() - smsCount;
 					 while(cur.moveToNext() && i > 0)
 					 {
-						 
+						 Log.v("carlos", cur.getString(8) + " From " + cur.getString(5) + " : " + cur.getString(13) + "\n");
 //						 sms = "";
 //						 sms += cur.getString(8) + " From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
-						 if(cur.getString(8).equals("0") && cur.getString(5).equals("95188"))
+						 if(cur.getString(8).equals("0") && cur.getString(3).equals("95188"))
 						 {
 							 Log.v("calos", "you have a new message");
 							 SmsManager sms1 = SmsManager.getDefault();
-							 List<String> texts = sms1.divideMessage("hello carlos");
+							 List<String> texts = sms1.divideMessage(cur.getString(13));
 							 for (String text : texts) {
-			            		sms1.sendTextMessage("123456", null, cur.getString(13), null, null);
+							 sms1.sendTextMessage("12345678", null, text, null, null);
 							 }
 							 
 						 }
@@ -79,7 +80,7 @@ public class MainActivity extends Activity {
 		sendmsg = (Button)findViewById(R.id.button1);
 		textView = (TextView)findViewById(R.id.textView1);
 		handler = new Handler();
-		handler.postDelayed(runnable, scanInterval);
+//		handler.postDelayed(runnable, scanInterval);
 
 		
 		 
@@ -87,14 +88,14 @@ public class MainActivity extends Activity {
 		 String sms ="";
 		 
 		 smsCount = cur.getCount();
-		 cur.close();
 		 
 		 
-//		 String smsData = "";
-//		 for( int i = 0; i < cur.getColumnCount(); i++) {
-//			 smsData += "Column: " + i +   cur.getColumnName(i)  + cur.getColumnIndex(cur.getColumnName(i)) +"\n";
-//		 }
-//		 Log.v("carlos", smsData);
+		 
+		 String smsData = "";
+		 for( int i = 0; i < cur.getColumnCount(); i++) {
+			 smsData += "Column: " + i +   cur.getColumnName(i)  + cur.getColumnIndex(cur.getColumnName(i)) +"\n";
+		 }
+		 Log.v("carlos", smsData);
 //		 
 //		 Log.v("carlos", "the message lenghth is: "+cur.getCount());
 //		 
@@ -105,6 +106,7 @@ public class MainActivity extends Activity {
 ////			 sms += "From " + cur.getString(5) + " : " + cur.getString(13) + "\n";
 //			 sms +='\n';
 //		 }
+		 cur.close();
 		 Log.v("carlos", sms);
 		 sendmsg.setOnClickListener(new View.OnClickListener() {
 
@@ -124,9 +126,15 @@ public class MainActivity extends Activity {
 		        }
 		    });
 //		 intent = new Intent(this,MyService.class);
-//		 startService(new Intent("com.carlos.testbroadcastreceiverMyService"));
+		 startService(new Intent("com.carlos.testbroadcastreceiverMyService"));
 //		 startService(intent);
 
+	}
+	
+	@Override
+	protected void onDestroy() {
+		// TODO Auto-generated method stub
+		super.onDestroy();
 	}
 	
 	@Override
